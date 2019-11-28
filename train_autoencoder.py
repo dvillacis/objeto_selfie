@@ -30,7 +30,7 @@ X = X.astype('float32')/255.0 - 0.5
 X_train, X_test = train_test_split(X, test_size=0.1, random_state=42)
 
 IMG_SHAPE = X.shape[1:]
-encoder, decoder = build_autoencoder(IMG_SHAPE, 1000)
+encoder, decoder = build_autoencoder(IMG_SHAPE, 64)
 
 inp = Input(IMG_SHAPE)
 code = encoder(inp)
@@ -44,13 +44,14 @@ print(autoencoder.summary())
 history = autoencoder.fit(x=X_train, y=X_train, epochs=15, validation_data=[X_test, X_test])
 
 # Testing
-tst_img = load_image("puppy.jpg")
-tst_img = tst_img.astype('float32')/255.0 - 0.5
-tst_img = cv2.resize(tst_img, (32, 32))
-visualize(tst_img,encoder,decoder)
+# tst_img = load_image("puppy.jpg")
+# tst_img = tst_img.astype('float32')/255.0 - 0.5
+# tst_img = cv2.resize(tst_img, (32, 32))
+# visualize(tst_img,encoder,decoder)
 
 # Save Model
-#autoencoder.save('models/faces.h5')
-#save_model(autoencoder,"faces.h5")
+autoencoder.save('models/faces/faces.h5')
+encoder.save('models/faces/encoder_faces.h5')
+decoder.save('models/faces/decoder_faces.h5')
 
 
