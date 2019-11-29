@@ -49,3 +49,18 @@ def load_lfw_dataset(raw_images_name, images_name, attrs_name,use_raw=False, dx=
     # Preserve photo_ids order
     all_attrs = photo_ids.merge(df_attrs, on=('person', 'imagenum')).drop(["person", "imagenum"], axis=1)
     return all_photos, all_attrs
+
+def load_flowers_dataset(images_name):
+    # Read photos
+    all_photos=[]
+    with tarfile.open(images_name) as f:
+        for m in tqdm.tqdm(f.getmembers()):
+            if m.isfile() and m.name.endswith(".jpg"):
+                img = decode_image_from_raw_bytes(f.extractfile(m).read())
+                img = img[80:-80, 90:-90]
+                img = cv2.resize(img,(64,64))
+                all_photos.append(img)
+    all_photos = np.stack(all_photos).astype('uint8')
+    return all_photos
+
+
