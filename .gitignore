@@ -1,3 +1,4 @@
 .vscode/*
 __pycache__/*
 autoencoder_test_old.py
+datasets/*

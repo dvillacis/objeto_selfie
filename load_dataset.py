@@ -63,4 +63,14 @@ def load_flowers_dataset(images_name):
     all_photos = np.stack(all_photos).astype('uint8')
     return all_photos
 
+def load_folder_dataset(dataset_path):
+    all_photos=[]
+    for filename in os.listdir(dataset_path):
+        if filename.endswith(".jpg"):
+            img = load_image(dataset_path+'/'+filename)
+            all_photos.append(img)
+    all_photos = np.stack(all_photos).astype('uint8')
+    return all_photos
+
+
 
