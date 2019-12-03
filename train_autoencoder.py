@@ -30,7 +30,7 @@ X = X.astype('float32')/255.0 - 0.5
 X_train, X_test = train_test_split(X, test_size=0.1, random_state=42)
 
 IMG_SHAPE = X.shape[1:]
-encoder, decoder = build_autoencoder(IMG_SHAPE, 256)
+encoder, decoder = build_autoencoder(IMG_SHAPE, 32)
 
 inp = Input(IMG_SHAPE)
 code = encoder(inp)
