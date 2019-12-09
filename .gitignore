@@ -2,3 +2,4 @@
 __pycache__/*
 autoencoder_test_old.py
 datasets/*
+output/*

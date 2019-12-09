@@ -37,7 +37,7 @@ autoencoder.compile(optimizer='adamax', loss='mse')
 print(autoencoder.summary())
 
 # Model training
-history = autoencoder.fit(x=X_train, y=X_train, epochs=20, validation_data=[X_test, X_test])
+history = autoencoder.fit(x=X_train, y=X_train, epochs=30, validation_data=[X_test, X_test])
 
 # Save Model
 autoencoder.save('models/flowers/flowers.h5')

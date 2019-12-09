@@ -7,12 +7,6 @@ import tqdm
 from PIL import Image
 from utils import decode_image_from_raw_bytes
 
-def load_image(img_path):
-    img = Image.open(img_path)
-    img.load()
-    img = np.asarray(img, dtype=np.uint8)
-    return img
-
 def load_lfw_dataset(raw_images_name, images_name, attrs_name,use_raw=False, dx=80, dy=90, dimx=45, dimy=45):
 
     # Read attributes

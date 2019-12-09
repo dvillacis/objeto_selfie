@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 
 from sklearn.model_selection import train_test_split
 
-from load_dataset import load_lfw_dataset, load_image
+from load_dataset import load_lfw_dataset
+from utils import load_image
 from model import build_autoencoder
 from visualize import visualize, show_image
 

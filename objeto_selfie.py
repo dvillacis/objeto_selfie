@@ -1,8 +1,10 @@
 import cv2
 import numpy as np
 import configparser
+import sched, time
+from datetime import datetime
 from keras.models import load_model
-from load_dataset import load_image
+from utils import load_image, save_image
 
 def fuse_patch(frame,patch,original,x,y,w,h):
     (p,q,_) = original.shape
@@ -50,7 +52,9 @@ def load_keras_model(model_path):
     #print(m.summary())
     return m
 
-def setup_model(model_path, model_name):
+def setup_model(model_path, model_names):
+    i = int(np.random.randint(low=0,high=len(model_names)))
+    model_name = model_names[i]
     encoder_path = model_path+'/'+model_name+'/'+model_name+'.h5'
     ae = load_keras_model(encoder_path)
     original = load_image('test_images/'+model_name+'.jpg')
@@ -60,7 +64,7 @@ def setup_model(model_path, model_name):
 
 def main(config):
     cam = cv2.VideoCapture(0)
-    cv2.namedWindow("OSelfie v2.0",cv2.WINDOW_NORMAL)
+    cv2.namedWindow("For the time being",cv2.WINDOW_NORMAL)
     WIDTH = int(cam.get(3))
     HEIGHT = int(cam.get(4))
 
@@ -68,13 +72,24 @@ def main(config):
 
     MODEL_PATH = 'models'
     MODEL_NAMES = ['faces','cocoon','flowers']
-    i = int(np.random.randint(low=0,high=len(MODEL_NAMES)))
-    ae,original = setup_model(MODEL_PATH,MODEL_NAMES[i])
-    
+    OUT_IMAGES_PATH = 'output'
 
+    
+    ae,original = setup_model(MODEL_PATH,MODEL_NAMES)
+
+    DETECT_FLAG = False
+
+    FRAME_COUNTER_MAX = 100
+    frame_counter = 1
+    
     while True:
         ret,frame = cam.read()
         frame = cv2.flip(frame,1)
+
+        # Check face detection
+        out = frame
+        if DETECT_FLAG == True:
+            out = detect_faces(frame,"face_detection_model/haarcascade_frontalface_default.xml",ae,OFFSET,original)
     
         if not ret:
             break
@@ -87,12 +102,18 @@ def main(config):
             break
         elif K == 32 or K == 13:
             # SPACE pressed
-            i = int(np.random.randint(low=0,high=len(MODEL_NAMES)))
-            print(i)
-            ae,original = setup_model(MODEL_PATH,MODEL_NAMES[i])
+            save_image(out,OUT_IMAGES_PATH,datetime.now().strftime("%Y%m%d_%H_%M_%S"))
+        elif K == 100:
+            if DETECT_FLAG == False:
+                DETECT_FLAG = True
+            else:
+                DETECT_FLAG = False
 
-        out = detect_faces(frame,"face_detection_model/haarcascade_frontalface_default.xml",ae,OFFSET,original)
-        cv2.imshow("OSelfie v2.0",cv2.resize(out,(WIDTH,HEIGHT)))
+        if frame_counter > FRAME_COUNTER_MAX and DETECT_FLAG == True:
+            ae,original = setup_model(MODEL_PATH,MODEL_NAMES)
+            frame_counter = 1
+        frame_counter += 1
+        cv2.imshow("For the time being",cv2.resize(out,(WIDTH,HEIGHT)))
     cam.release()
     cv2.destroyAllWindows()
 
