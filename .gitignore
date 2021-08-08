@@ -1,5 +1,5 @@
-.vscode/*
-__pycache__/*
+.vscode
 autoencoder_test_old.py
 datasets/*
 output/*
+__pycache__
